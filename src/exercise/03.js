@@ -113,6 +113,14 @@ function App() {
   )
 }
 
+Menu = React.memo(Menu)
+ListItem = React.memo(ListItem, (prevProps, nextProps) => {
+  const wasHighlighted = prevProps.highlightedIndex === prevProps.index
+  const nowHighlighted = nextProps.highlightedIndex === nextProps.index
+  return !((wasHighlighted || nowHighlighted) && wasHighlighted !== nowHighlighted);
+
+})
+
 export default App
 
 /*
