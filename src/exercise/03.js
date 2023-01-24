@@ -15,18 +15,23 @@ function Menu({
 }) {
   return (
     <ul {...getMenuProps()}>
-      {items.map((item, index) => (
-        <ListItem
-          key={item.id}
-          getItemProps={getItemProps}
-          item={item}
-          index={index}
-          selectedItem={selectedItem}
-          highlightedIndex={highlightedIndex}
-        >
-          {item.name}
-        </ListItem>
-      ))}
+      {items.map((item, index) => {
+        const isSelected = selectedItem?.id === item.id
+        const isHighlighted = highlightedIndex === index
+
+        return (
+            <ListItem
+                key={item.id}
+                getItemProps={getItemProps}
+                item={item}
+                index={index}
+                isSelected={isSelected}
+                isHighlighted={isHighlighted}
+            >
+              {item.name}
+            </ListItem>
+        )
+      })}
     </ul>
   )
 }
@@ -36,12 +41,10 @@ function ListItem({
   getItemProps,
   item,
   index,
-  selectedItem,
-  highlightedIndex,
+  isSelected,
+  isHighlighted,
   ...props
 }) {
-  const isSelected = selectedItem?.id === item.id
-  const isHighlighted = highlightedIndex === index
   return (
     <li
       {...getItemProps({
@@ -114,12 +117,15 @@ function App() {
 }
 
 Menu = React.memo(Menu)
-ListItem = React.memo(ListItem, (prevProps, nextProps) => {
-  const wasHighlighted = prevProps.highlightedIndex === prevProps.index
-  const nowHighlighted = nextProps.highlightedIndex === nextProps.index
-  return !((wasHighlighted || nowHighlighted) && wasHighlighted !== nowHighlighted);
 
-})
+ListItem = React.memo(ListItem)
+
+// ListItem = React.memo(ListItem, (prevProps, nextProps) => {
+//   const wasHighlighted = prevProps.highlightedIndex === prevProps.index
+//   const nowHighlighted = nextProps.highlightedIndex === nextProps.index
+//   return !((wasHighlighted || nowHighlighted) && wasHighlighted !== nowHighlighted);
+//
+// })
 
 export default App
 
