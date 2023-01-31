@@ -9,7 +9,7 @@ import {
   updateGridState,
   updateGridCellState,
 } from '../utils'
-import {useState} from "react";
+import {useState} from 'react'
 
 const AppStateContext = React.createContext()
 const AppDispatchContext = React.createContext()
@@ -86,11 +86,22 @@ function Grid() {
 }
 Grid = React.memo(Grid)
 
-function Cell({row, column}) {
-  const state = useAppState()
-  const cell = state.grid[row][column]
+function withStateSlice(Comp, slice) {
+  const MemoComp = React.memo(Comp)
+  function Wrapper(props) {
+    const state = useAppState()
+    return <MemoComp {...props} state={slice(state, props)} />
+  }
+
+  Wrapper.displayName = `withStateSlice(${Comp.displayName || Comp.name})`
+
+  return React.memo(Wrapper)
+}
+
+function Cell({state: cell, row, column}) {
   const dispatch = useAppDispatch()
   const handleClick = () => dispatch({type: 'UPDATE_GRID_CELL', row, column})
+
   return (
     <button
       className="cell"
@@ -104,7 +115,7 @@ function Cell({row, column}) {
     </button>
   )
 }
-Cell = React.memo(Cell)
+Cell = withStateSlice(Cell, (state, {row, column}) => state.grid[row][column])
 
 function DogNameInput() {
   // 🐨 replace the useAppState and useAppDispatch with a normal useState here
